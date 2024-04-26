@@ -101,7 +101,7 @@ export default function SignupPage() {
 					<p className="mx-auto h-10 w-auto flex justify-center items-center font-black text-blue-500 text-2xl">
 						TodoApp
 					</p>
-					<h2 className="mt-5 text-center text-2xl font-medium leading-9 tracking-tight text-white">
+					<h2 className="mt-5 text-center text-2xl font-medium leading-9 tracking-tight text-black">
 						Sign in to your account
 					</h2>
 				</div>
@@ -111,7 +111,7 @@ export default function SignupPage() {
 						<div>
 							<label
 								htmlFor="email"
-								className="block text-sm font-medium leading-6 text-white"
+								className="block text-sm font-medium leading-6 text-black"
 							>
 								Email address
 							</label>
@@ -127,9 +127,9 @@ export default function SignupPage() {
 									placeholder="email address"
 									autoComplete="email"
 									required
-									className={`w-full rounded-md border-5 bg-transparent/5 placeholder:text-black/30 border-gray-600 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 ${
+									className={`w-full rounded-md border-5 bg-transparent/5 placeholder:text-black/30 border-gray-600 py-1.5 text-black shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 ${
 										touched.email && errors.email
-											? "text-white focus:outline-none focus:border-red-600 border-2 bg-transparent border-red-600 placeholder:text-gray-400 transition-all"
+											? "text-black focus:outline-none focus:border-red-600 border-2 bg-transparent border-red-600 placeholder:text-gray-400 transition-all"
 											: ""
 									}  `}
 								/>
@@ -144,7 +144,7 @@ export default function SignupPage() {
 							<div className="flex items-center justify-between">
 								<label
 									htmlFor="username"
-									className="block text-sm font-medium leading-6 text-white"
+									className="block text-sm font-medium leading-6 text-black"
 								>
 									Username
 								</label>
@@ -159,9 +159,9 @@ export default function SignupPage() {
 									onBlur={() => handleBlur("username")}
 									placeholder="username"
 									required
-									className={`w-full rounded-md border-5 bg-transparent/5 placeholder:text-black/30 border-gray-600 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 ${
+									className={`w-full rounded-md border-5 bg-transparent/5 placeholder:text-black/30 border-gray-600 py-1.5 text-black shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 ${
 										touched.username && errors.username
-											? "text-white focus:outline-none focus:border-red-600 border-2 bg-transparent border-red-600 placeholder:text-gray-400 transition-all"
+											? "text-black focus:outline-none focus:border-red-600 border-2 bg-transparent border-red-600 placeholder:text-gray-400 transition-all"
 											: ""
 									}  `}
 								/>
@@ -174,7 +174,7 @@ export default function SignupPage() {
 							<div className="flex items-center justify-between">
 								<label
 									htmlFor="password"
-									className="block text-sm font-medium leading-6 text-white"
+									className="block text-sm font-medium leading-6 text-black"
 								>
 									Password
 								</label>
@@ -190,9 +190,9 @@ export default function SignupPage() {
 									onBlur={() => handleBlur("password")}
 									autoComplete="current-password"
 									required
-									className={`w-full rounded-md border-5 bg-transparent/5 placeholder:text-black/30 border-gray-600 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 ${
+									className={`w-full rounded-md border-5 bg-transparent/5 placeholder:text-black/30 border-gray-600 py-1.5 text-black shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 ${
 										touched.password && errors.password
-											? "text-white focus:outline-none focus:border-red-600 border-2 bg-transparent border-red-600 placeholder:text-gray-400 transition-all"
+											? "text-black focus:outline-none focus:border-red-600 border-2 bg-transparent border-red-600 placeholder:text-gray-400 transition-all"
 											: ""
 									}  `}
 								/>

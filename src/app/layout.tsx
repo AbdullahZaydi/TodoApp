@@ -1,4 +1,4 @@
-import {TodoProvider} from "@/store/todo";
+import {TodoProvider} from "@/context/todo";
 import "./globals.css";
 import {Inter} from "next/font/google";
 import {Toaster} from "@/components/ui/toaster";

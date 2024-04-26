@@ -1,5 +1,5 @@
 "use client";
-import {useTodos} from "@/store/todo";
+import {useTodos} from "@/context/todo";
 import {useSearchParams} from "next/navigation";
 import React from "react";
 

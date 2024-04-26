@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
-import {useState} from "react";
 import {useRouter} from "next/navigation";
 import axios from "axios";
 import {useFormik} from "formik";
 import * as yup from "yup";
 import {BiLoaderAlt} from "react-icons/bi";
 import {useToast} from "@/components/ui/use-toast";
+import {useTodos} from "@/context/todo";
 
 //ToDo Some Error Check not working properly in if else cases handle later
 
@@ -25,29 +25,51 @@ const userSchema = yup.object().shape({
 export default function LoginPage() {
 	const router = useRouter();
 	const {toast} = useToast();
-	const [Loading, setLoading] = useState(false);
+	const {isLoading: loginLoading, setIsLoading: setLoginLoading} = useTodos();
+	const {isLoading: guestLoading, setIsLoading: setGuestLoading} = useTodos();
 
 	const onLogin = async (values: any) => {
 		try {
-			setLoading(true);
+			setLoginLoading(true);
 			const response = await axios.post("/api/users/login", values);
 			const responseData = response.data;
-			console.log(responseData);
 			if (!responseData.error) {
 				// No error, redirect to home page
 				router.push("/");
 				toast({title: responseData.message});
 			}
 		} catch (error: any) {
-			console.error("An error occurred during login:", error);
 			// Handle network errors or other exceptions
-			if (error.response && error.response.data && error.response.data.error) {
-				toast({title: error.response.data.error});
-			} else {
-				toast({title: "An error occurred during login. Please try again later."});
-			}
+			const errorMessage =
+				error.response?.data?.error || "An error occurred during login.";
+
+			toast({title: errorMessage});
 		} finally {
-			setLoading(false);
+			setLoginLoading(false);
+		}
+	};
+
+	const guestLogin = async () => {
+		setValues({email: "Jayeshgadhok@gmail.com", password: "Jayesh@1996"});
+		try {
+			setGuestLoading(true);
+			const response = await axios.post("/api/users/login", {
+				email: "Jayeshgadhok@gmail.com",
+				password: "Jayesh@1996",
+			});
+			const responseData = response.data;
+			if (!responseData.error) {
+				router.push("/");
+				toast({title: responseData.message});
+			}
+		} catch (error: any) {
+			const errorMessage =
+				error.response?.data?.error || "An error occurred during guest login.";
+			toast({title: errorMessage});
+			console.error("An error occurred during guest login:", error);
+		} finally {
+			setGuestLoading(false);
+			resetForm();
 		}
 	};
 
@@ -60,6 +82,8 @@ export default function LoginPage() {
 		setFieldTouched,
 		isValid,
 		isSubmitting,
+		setValues,
+		resetForm,
 	} = useFormik({
 		initialValues: {
 			email: "",
@@ -85,7 +109,7 @@ export default function LoginPage() {
 					<p className="mx-auto h-10 w-auto flex justify-center items-center font-black text-blue-500 text-2xl">
 						TodoApp
 					</p>
-					<h2 className="mt-5 text-center text-2xl font-medium leading-9 tracking-tight text-white">
+					<h2 className="mt-5 text-center text-2xl font-medium leading-9 tracking-tight text-black">
 						Login to your account
 					</h2>
 				</div>
@@ -94,7 +118,7 @@ export default function LoginPage() {
 						<div>
 							<label
 								htmlFor="email"
-								className="block text-sm font-medium leading-6 text-white"
+								className="block text-sm font-medium leading-6 text-black"
 							>
 								Email address
 							</label>
@@ -109,9 +133,9 @@ export default function LoginPage() {
 									placeholder="rahul@xyz.com"
 									autoComplete="email"
 									required
-									className={`w-full rounded-md border-5 bg-transparent/5 placeholder:text-black/30 border-gray-600 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 ${
+									className={`w-full rounded-md border-5 bg-transparent/5 placeholder:text-black/30 border-gray-600 py-1.5 text-black shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 ${
 										touched.email && errors.email
-											? "text-white focus:outline-none focus:border-red-600 border-2 bg-transparent border-red-600 placeholder:text-gray-400 transition-all"
+											? " focus:outline-none focus:border-red-600 border-2 bg-transparent border-red-600 placeholder:text-gray-400 transition-all"
 											: ""
 									}  `}
 								/>
@@ -125,7 +149,7 @@ export default function LoginPage() {
 							<div className="flex items-center justify-between">
 								<label
 									htmlFor="password"
-									className="block text-sm font-medium leading-6 text-white"
+									className="block text-sm font-medium leading-6 text-black"
 								>
 									Password
 								</label>
@@ -148,9 +172,9 @@ export default function LoginPage() {
 									onBlur={() => handleTouched("password")}
 									placeholder="rahul@1999"
 									required
-									className={`w-full rounded-md border-5 bg-transparent/5 placeholder:text-black/30 border-gray-600 py-1.5 text-white shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 ${
+									className={`w-full rounded-md border-5 bg-transparent/5 placeholder:text-black/30 border-gray-600 py-1.5 text-black shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 ${
 										touched.password && errors.password
-											? "text-white focus:outline-none focus:border-red-600 border-2 bg-transparent border-red-600 placeholder:text-gray-400 transition-all"
+											? " focus:outline-none focus:border-red-600 border-2 bg-transparent border-red-600 placeholder:text-gray-400 transition-all"
 											: ""
 									}  `}
 								/>
@@ -160,20 +184,34 @@ export default function LoginPage() {
 							</div>
 						</div>
 
-						<div>
+						<div className="grid grid-cols-2 gap-3">
 							<button
-								onClick={onLogin}
-								type="button"
+								type="submit"
 								disabled={!isValid || isSubmitting}
-								className="flex items-center gap-2 w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+								className="cursor-pointer flex items-center gap-2 w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 							>
-								{isSubmitting || Loading ? (
+								{isSubmitting && loginLoading ? (
 									<>
 										Logging in...
 										<BiLoaderAlt className="text-lg animate-spin" />
 									</>
 								) : (
 									"Log in"
+								)}
+							</button>
+							<button
+								onClick={guestLogin}
+								type="button"
+								disabled={!isValid || isSubmitting}
+								className="text-white cursor-pointer flex items-center gap-2 w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+							>
+								{isSubmitting && guestLoading ? (
+									<>
+										Logging in...
+										<BiLoaderAlt className="text-lg animate-spin" />
+									</>
+								) : (
+									"Guest login"
 								)}
 							</button>
 						</div>
