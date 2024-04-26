@@ -1,64 +1,65 @@
-import { Connect } from "@/db/dbConfig";
+import {Connect} from "@/db/dbConfig";
 import User from "@/models/userModel";
-import { NextRequest, NextResponse } from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 import bcryptjs from "bcrypt";
 import jwt from "jsonwebtoken";
 
 Connect();
 
 export async function POST(request: NextRequest) {
-  try {
-    const reqBody = await request.json();
-    const { email, password } = reqBody;
+	try {
+		const reqBody = await request.json();
+		const {email, password} = reqBody;
 
-    //checking if user exists
-    const user = await User.findOne({ email });
-    if (!user) {
-      return NextResponse.json(
-        { error: "User not found. Please check your email and try again." },
-        { status: 400 }
-      );
-    }
-    console.log(user);
+		//checking if user exists
+		const user = await User.findOne({email});
 
-    //check if password is correct
-    const validPassword = await bcryptjs.compare(password, user.password);
-    if (!validPassword) {
-      return NextResponse.json(
-        { error: "Invalid password. Please enter the correct password." },
-        { status: 400 }
-      );
-    }
+		if (!user) {
+			console.log("user password name");
+			return NextResponse.json(
+				{error: "User not found. Please check your email and try again."},
+				{status: 400}
+			);
+		}
 
-    //creating token data
-    const tokenData = {
-      id: user._id,
-      username: user.username,
-      email: user.email,
-    };
+		//check if password is correct
+		const validPassword = await bcryptjs.compare(password, user.password);
+		if (!validPassword) {
+			console.log("user password is incorrect");
+			return NextResponse.json(
+				{error: "Invalid password. Please enter the correct password."},
+				{status: 400}
+			);
+		}
 
-    //creating token
-    const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET_KEY!, {
-      expiresIn: "1h",
-    });
+		//creating token data
+		const tokenData = {
+			id: user._id,
+			username: user.username,
+			email: user.email,
+		};
 
-    //sending token to user cookies
-    const response = NextResponse.json({
-      message: "Login successful",
-      success: true,
-    });
+		//creating token
+		const token = jwt.sign(tokenData, process.env.TOKEN_SECRET_KEY!, {
+			expiresIn: "1h",
+		});
 
-    response.cookies.set("token", token, { httpOnly: true });
+		//sending token to user cookies
+		const response = NextResponse.json({
+			message: "Login successful",
+			success: true,
+		});
 
-    return response;
-  } catch (error: any) {
-    return NextResponse.json(
-      {
-        error:
-          error.message ||
-          "An error occurred during login. Please try again later.",
-      },
-      { status: 500 }
-    );
-  }
+		response.cookies.set("token", token, {httpOnly: true});
+
+		return response;
+	} catch (error: any) {
+		return NextResponse.json(
+			{
+				error:
+					error.message || "An error occurred during login. Please try again later.",
+			},
+			{status: 500}
+		);
+	}
 }
