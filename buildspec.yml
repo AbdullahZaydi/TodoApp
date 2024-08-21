@@ -24,9 +24,11 @@ phases:
 
 artifacts:
   files:
-    - .next/**/*
-    - public/**/*
-  base-directory: .next
+    - .next/**/* # Include all files in the .next directory
+    - public/**/* # Include all static files in the public directory
+    - package.json # Include package.json for deployment context
+    - next.config.js # Include next.config.js if custom configuration is used
+  base-directory: . # Specify the base directory for the artifacts
 
 cache:
   paths:
