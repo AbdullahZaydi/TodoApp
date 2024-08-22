@@ -1,0 +1,28 @@
+service: nextjs-app
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-southeast-2
+
+plugins:
+  - serverless-nextjs-plugin
+
+custom:
+  nextConfigDir: ./ # Directory containing next.config.js
+
+functions:
+  nextjs:
+    handler: handler.next
+    events:
+      - http:
+          path: /
+          method: GET
+      - http:
+          path: /{proxy+}
+          method: ANY
+
+package:
+  exclude:
+    - node_modules/**
+    - .git/**
