@@ -18,3 +18,8 @@ artifacts:
   files:
     - .serverless/**
   discard-paths: yes
+
+post_build:
+  commands:
+    - echo Deploying to AWS Lambda...
+    - serverless deploy
